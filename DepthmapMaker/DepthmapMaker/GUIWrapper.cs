@@ -1,8 +1,8 @@
 namespace DepthmapMaker
 {
-    public partial class Form1 : Form
+    public partial class GUIWrapper : Form
     {
-        public Form1()
+        public GUIWrapper()
         {
             InitializeComponent();
         }
