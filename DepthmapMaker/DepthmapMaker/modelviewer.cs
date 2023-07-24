@@ -11,6 +11,7 @@ using OpenTK.Mathematics;
 using System.Timers;
 using Timer = System.Timers.Timer;
 using Keys = OpenTK.Windowing.GraphicsLibraryFramework.Keys;
+using System.ComponentModel;
 
 namespace DepthmapMaker
 {
@@ -24,10 +25,6 @@ namespace DepthmapMaker
 
         private int _elementBufferObject;
 
-        private int _vaoModel;
-
-        private Shader _shader;
-
         private Shader _lightingShader;
 
         private Texture _texMap;
@@ -40,12 +37,18 @@ namespace DepthmapMaker
         private float[] _vertices;
         private uint[] _indices;
 
+        //Menu child thread
+
+        private Menu menu = new Menu();
+        private Thread menuThread;
+
         /* allows me to update model rotation by updating these values during OnUpdateFrame()
          * and then using them during OnRenderFrame() to apply as values for the rotation matrix
          * probably a cleaner way to do this without setting them as class properties*/
         private double _rotateX = 0;
         private double _rotateY = 0;
 
+        //Mouse threading
         private Timer _leftmousedownTimer;
         private Timer _rightmousedownTimer;
         private bool _mouseMoved = false;
@@ -53,7 +56,7 @@ namespace DepthmapMaker
 
         //affects lighting attenuation
         //todo let this be changed by user through GUI
-        public float lightConstant = 2.0f;
+        public float lightConstant = 1.0f;
         public float lightLinear = 0.1f;
         public float lightQuadratic = 0.1f;
         public float lightDiffuse = 10f;
@@ -74,7 +77,7 @@ namespace DepthmapMaker
 
 
             ObjLoader loader = new ObjLoader();
-            var model = loader.LoadFile("E:/objects/cube.obj");
+            var model = loader.LoadFile("E:/objects/cat.obj");
             _vertices = model.Vertices.ToArray();
             _indices = model.VertexIndices.ToArray();
 
@@ -110,8 +113,14 @@ namespace DepthmapMaker
             _camera = new Camera(Vector3.UnitZ * 3, Size.X / (float)Size.Y);
 
             //absolute paths until I figure out how the relative pathing works for vs
-            _shader = new Shader("E:/major proj/DepthmapGenerator/DepthmapGeneratorPrototype/PrototypeViewer/Shaders/shader.vert",
-                "E:/major proj/DepthmapGenerator/DepthmapGeneratorPrototype/PrototypeViewer/Shaders/shaders.frag");
+            _lightingShader = new Shader("E:/major proj/DepthmapGenerator/DepthmapGeneratorPrototype/PrototypeViewer/Shaders/shader.vert",
+                "E:/major proj/DepthmapGenerator/DepthmapGeneratorPrototype/PrototypeViewer/Shaders/lighting.frag");
+
+
+            menuThread = new Thread(new ThreadStart(runMenu));
+            menuThread.SetApartmentState(ApartmentState.STA);
+            menuThread.Start();
+
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -185,6 +194,21 @@ namespace DepthmapMaker
                 CursorState = CursorState.Normal;
             }
             base.OnUpdateFrame(e);
+            UpdateFromMenu();
+
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            try
+            {
+                menuThread.Abort();
+            }
+            catch (System.PlatformNotSupportedException ex)
+            {
+                //
+            }
+            base.OnClosing(e);
         }
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
@@ -225,6 +249,37 @@ namespace DepthmapMaker
                 _camera.Position += _camera.Up * deltaY * _mouseSens * 0.1f;
                 _mouseMoved = false;
             }
+        }
+
+        private void runMenu()
+        {
+            ApplicationConfiguration.Initialize();
+            menu = new Menu();
+            Application.Run(menu);
+        }
+
+        private void UpdateFromMenu()
+        {
+            lightDiffuse = menu.getDiffuse();
+            lightLinear = lightQuadratic = menu.getAttenuation();
+            if (menu.isbuttonPressed())
+            {
+                takeScreenshot(menu.GetSelectedFilepath());
+            }
+        }
+
+        private void takeScreenshot(string filepath)
+        {
+            int width = Size.X;
+            int height = Size.Y;
+            Bitmap result = new Bitmap(width, height);
+
+            System.Drawing.Imaging.BitmapData data =
+                result.LockBits(new Rectangle(0, 0, width, height), System.Drawing.Imaging.ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            GL.ReadPixels(0, 0, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, data.Scan0);
+            result.UnlockBits(data);
+            result.RotateFlip(RotateFlipType.RotateNoneFlipY);
+            result.Save(filepath);
         }
     }
 }
