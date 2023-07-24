@@ -74,10 +74,11 @@ namespace DepthmapMaker
             _leftmousedownTimer.Elapsed += leftMouseTimerEvent;
             _rightmousedownTimer.Elapsed += rightMouseTimerEvent;
 
-
+            SelectModel objectFileSelector = new SelectModel();
+            string objFile = objectFileSelector.GetModelPath();
 
             ObjLoader loader = new ObjLoader();
-            var model = loader.LoadFile("E:/objects/cat.obj");
+            var model = loader.LoadFile(objFile);
             _vertices = model.Vertices.ToArray();
             _indices = model.VertexIndices.ToArray();
 
@@ -108,13 +109,14 @@ namespace DepthmapMaker
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, _elementBufferObject);
             GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Length * sizeof(uint), _indices, BufferUsageHint.StaticDraw);
 
-            _texMap = Texture.LoadFromFile("E:/major proj/DepthmapGenerator/DepthmapGeneratorPrototype/PrototypeViewer/Resources/white.png");
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            _texMap = Texture.LoadFromFile(baseDir + "/resources/textures/white.png");
 
             _camera = new Camera(Vector3.UnitZ * 3, Size.X / (float)Size.Y);
 
             //absolute paths until I figure out how the relative pathing works for vs
-            _lightingShader = new Shader("E:/major proj/DepthmapGenerator/DepthmapGeneratorPrototype/PrototypeViewer/Shaders/shader.vert",
-                "E:/major proj/DepthmapGenerator/DepthmapGeneratorPrototype/PrototypeViewer/Shaders/lighting.frag");
+            _lightingShader = new Shader(baseDir +"/resources/shaders/shader.vert",
+                baseDir + "/resources/shaders/lighting.frag");
 
 
             menuThread = new Thread(new ThreadStart(runMenu));

@@ -44,7 +44,7 @@
             // 
             // DiffuseBar
             // 
-            this.DiffuseBar.Location = new System.Drawing.Point(12, 197);
+            this.DiffuseBar.Location = new System.Drawing.Point(12, 50);
             this.DiffuseBar.Maximum = 100;
             this.DiffuseBar.Name = "DiffuseBar";
             this.DiffuseBar.Size = new System.Drawing.Size(357, 45);
@@ -55,7 +55,7 @@
             // diffuseLabel
             // 
             this.diffuseLabel.AutoSize = true;
-            this.diffuseLabel.Location = new System.Drawing.Point(12, 179);
+            this.diffuseLabel.Location = new System.Drawing.Point(12, 32);
             this.diffuseLabel.Name = "diffuseLabel";
             this.diffuseLabel.Size = new System.Drawing.Size(74, 15);
             this.diffuseLabel.TabIndex = 1;
@@ -70,7 +70,7 @@
             0,
             0,
             65536});
-            this.DiffuseUpdown.Location = new System.Drawing.Point(375, 197);
+            this.DiffuseUpdown.Location = new System.Drawing.Point(375, 50);
             this.DiffuseUpdown.Maximum = new decimal(new int[] {
             10,
             0,
@@ -89,7 +89,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 245);
+            this.label1.Location = new System.Drawing.Point(12, 98);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(100, 15);
             this.label1.TabIndex = 4;
@@ -97,7 +97,7 @@
             // 
             // AttenuationBar
             // 
-            this.AttenuationBar.Location = new System.Drawing.Point(12, 263);
+            this.AttenuationBar.Location = new System.Drawing.Point(12, 116);
             this.AttenuationBar.Maximum = 100;
             this.AttenuationBar.Name = "AttenuationBar";
             this.AttenuationBar.Size = new System.Drawing.Size(357, 45);
@@ -113,7 +113,7 @@
             0,
             0,
             131072});
-            this.AttenuationUpDown.Location = new System.Drawing.Point(375, 263);
+            this.AttenuationUpDown.Location = new System.Drawing.Point(375, 116);
             this.AttenuationUpDown.Maximum = new decimal(new int[] {
             1,
             0,
@@ -126,7 +126,7 @@
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(60, 358);
+            this.saveButton.Location = new System.Drawing.Point(56, 167);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(376, 91);
             this.saveButton.TabIndex = 7;
@@ -138,7 +138,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(500, 486);
+            this.ClientSize = new System.Drawing.Size(493, 275);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.AttenuationUpDown);
             this.Controls.Add(this.AttenuationBar);
@@ -147,7 +147,7 @@
             this.Controls.Add(this.diffuseLabel);
             this.Controls.Add(this.DiffuseBar);
             this.Name = "Menu";
-            this.Text = "Form1";
+            this.Text = "ViewerMenu";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.DiffuseBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DiffuseUpdown)).EndInit();
