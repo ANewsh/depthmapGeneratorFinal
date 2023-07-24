@@ -6,6 +6,7 @@ namespace DepthmapMaker
 {
     public partial class Menu : Form
     {
+        //value passers so they can be accessed from the main thread
         private Queue<int>diffuseValueQueue = new Queue<int>(new[] { 100 });
         private Queue<int> attenuationValueQueue = new Queue<int>(new[] { 10 });
         private bool buttonPressed = false;
@@ -45,7 +46,6 @@ namespace DepthmapMaker
         private void Form1_Load(object sender, EventArgs e)
         {
         }
-
 
         private void DiffuseBar_ValueChanged_1(object sender, EventArgs e)
         {

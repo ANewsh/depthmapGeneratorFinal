@@ -43,8 +43,7 @@ namespace DepthmapMaker
         private Thread menuThread;
 
         /* allows me to update model rotation by updating these values during OnUpdateFrame()
-         * and then using them during OnRenderFrame() to apply as values for the rotation matrix
-         * probably a cleaner way to do this without setting them as class properties*/
+         * and then using them during OnRenderFrame() to apply as values for the rotation matrix*/
         private double _rotateX = 0;
         private double _rotateY = 0;
 
@@ -54,8 +53,7 @@ namespace DepthmapMaker
         private bool _mouseMoved = false;
         private Vector2 _mousePosition;
 
-        //affects lighting attenuation
-        //todo let this be changed by user through GUI
+        //Shader lighting settings
         public float lightConstant = 1.0f;
         public float lightLinear = 0.1f;
         public float lightQuadratic = 0.1f;
@@ -67,6 +65,7 @@ namespace DepthmapMaker
         }
         protected override void OnLoad()
         {
+            //Creates timers that update camera and translation values every tick
             _leftmousedownTimer = new Timer();
             _rightmousedownTimer = new Timer();
             _leftmousedownTimer.Interval = _rightmousedownTimer.Interval = 1;
@@ -74,6 +73,7 @@ namespace DepthmapMaker
             _leftmousedownTimer.Elapsed += leftMouseTimerEvent;
             _rightmousedownTimer.Elapsed += rightMouseTimerEvent;
 
+            //Opens a winform that just creates a file selector
             SelectModel objectFileSelector = new SelectModel();
             string objFile = objectFileSelector.GetModelPath();
 
@@ -84,6 +84,7 @@ namespace DepthmapMaker
 
             base.OnLoad();
 
+            //set background to black
             GL.ClearColor(0f, 0f, 0f, 1.0f);
 
             GL.Enable(EnableCap.DepthTest);
@@ -92,9 +93,6 @@ namespace DepthmapMaker
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
             GL.BufferData(BufferTarget.ArrayBuffer, _vertices.Length * sizeof(float), _vertices, BufferUsageHint.StaticDraw);
-
-            _lightingShader = new Shader("E:/major proj/DepthmapGenerator/DepthmapGeneratorPrototype/PrototypeViewer/Shaders/shader.vert",
-                "E:/major proj/DepthmapGenerator/DepthmapGeneratorPrototype/PrototypeViewer/Shaders/lighting.frag");
 
             _vertexArrayObject = GL.GenVertexArray();
 
@@ -111,25 +109,20 @@ namespace DepthmapMaker
 
             string baseDir = AppDomain.CurrentDomain.BaseDirectory;
             _texMap = Texture.LoadFromFile(baseDir + "/resources/textures/white.png");
-
             _camera = new Camera(Vector3.UnitZ * 3, Size.X / (float)Size.Y);
-
-            //absolute paths until I figure out how the relative pathing works for vs
             _lightingShader = new Shader(baseDir +"/resources/shaders/shader.vert",
                 baseDir + "/resources/shaders/lighting.frag");
 
 
             menuThread = new Thread(new ThreadStart(runMenu));
-            menuThread.SetApartmentState(ApartmentState.STA);
+            menuThread.SetApartmentState(ApartmentState.STA);//Needed for file dialogue
             menuThread.Start();
-
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             base.OnRenderFrame(e);
 
-            _time += 4.0 * e.Time;
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             GL.BindVertexArray(_vertexArrayObject);
@@ -151,8 +144,6 @@ namespace DepthmapMaker
 
             var model = Matrix4.Identity * Matrix4.CreateRotationX((float)MathHelper.DegreesToRadians(_rotateY)) * Matrix4.CreateRotationY((float)MathHelper.DegreesToRadians(_rotateX));
             _lightingShader.SetMatrix4("model", model);
-
-            var view = _camera.GetViewMatrix();
 
             GL.Clear(ClearBufferMask.ColorBufferBit);
             GL.BindVertexArray(_vertexArrayObject);
@@ -252,7 +243,9 @@ namespace DepthmapMaker
                 _mouseMoved = false;
             }
         }
-
+        /// <summary>
+        /// runs
+        /// </summary>
         private void runMenu()
         {
             ApplicationConfiguration.Initialize();
@@ -260,6 +253,10 @@ namespace DepthmapMaker
             Application.Run(menu);
         }
 
+        /// <summary>
+        /// checks values from the menu passers
+        /// Assigns them accordingly and checks for button press
+        /// </summary>
         private void UpdateFromMenu()
         {
             lightDiffuse = menu.getDiffuse();

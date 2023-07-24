@@ -7,6 +7,9 @@ using OpenTK.Mathematics;
 
 namespace DepthmapMaker
 {
+    /* adapted from LearnOpenTk by opentk
+     * https://github.com/opentk/LearnOpenTK
+     */
     internal class Camera
     {
 

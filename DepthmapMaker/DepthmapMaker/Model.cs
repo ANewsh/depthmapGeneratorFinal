@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace DepthmapMaker
 {
+    /// <summary>
+    /// A class that internally stores relevent model information
+    /// </summary>
     internal class Model
     {
         List<float> vertices = new List<float>();

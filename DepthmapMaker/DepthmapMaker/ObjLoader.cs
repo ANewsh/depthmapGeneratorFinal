@@ -10,6 +10,7 @@ namespace DepthmapMaker
 {
     internal class ObjLoader
     {
+        //indexes of a set of quad indicies as 2 sets set of tri indicies
         private int[] sequence = { 1, 2, 4, 4, 2, 3 };
         private List<float> verticies = new List<float>();
         private List<uint> indicies = new List<uint>();
