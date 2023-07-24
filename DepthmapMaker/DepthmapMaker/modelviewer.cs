@@ -96,6 +96,13 @@ namespace DepthmapMaker
 
             _vertexArrayObject = GL.GenVertexArray();
 
+
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            _texMap = Texture.LoadFromFile(baseDir + "/resources/textures/white.png");
+            _camera = new Camera(Vector3.UnitZ * 3, Size.X / (float)Size.Y);
+            _lightingShader = new Shader(baseDir + "/resources/shaders/shader.vert",
+                baseDir + "/resources/shaders/lighting.frag");
+
             GL.BindVertexArray(_vertexArrayObject);
             var posLocation = _lightingShader.GetAttribLocation("aPos");
             GL.VertexAttribPointer(posLocation, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
@@ -106,13 +113,6 @@ namespace DepthmapMaker
             _elementBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, _elementBufferObject);
             GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Length * sizeof(uint), _indices, BufferUsageHint.StaticDraw);
-
-            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            _texMap = Texture.LoadFromFile(baseDir + "/resources/textures/white.png");
-            _camera = new Camera(Vector3.UnitZ * 3, Size.X / (float)Size.Y);
-            _lightingShader = new Shader(baseDir +"/resources/shaders/shader.vert",
-                baseDir + "/resources/shaders/lighting.frag");
-
 
             menuThread = new Thread(new ThreadStart(runMenu));
             menuThread.SetApartmentState(ApartmentState.STA);//Needed for file dialogue
